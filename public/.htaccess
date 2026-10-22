@@ -1,0 +1,20 @@
+# Holydeen ERP web app on Hostinger (LiteSpeed / Apache). Vite copies this file into dist/.
+
+# Single-page app: every URL that is not a real file is answered with index.html, so
+# refreshing or opening a deep link such as /sales/invoices does not 404.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# index.html must be re-checked on every visit so a new deploy is picked up at once.
+# (Hashed files in /assets are cached for a year by assets/.htaccess.)
+<IfModule mod_headers.c>
+  <FilesMatch "^index\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

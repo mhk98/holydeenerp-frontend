@@ -25,6 +25,18 @@ Start the backend first (`npm run dev` in `holydeen-erp-backend`). In developmen
 | `VITE_DEFAULT_CURRENCY` | `BDT`                   | Default currency for `lib/format.ts` |
 | `VITE_DEFAULT_LOCALE`   | `en`                    | Initial language (`en` or `bn`)      |
 
+## Deploying to Hostinger
+
+1. `.env.production` (git-ignored, read by `npm run build`) must point at the API with absolute URLs:
+   `VITE_API_URL=https://apierp.holydeen.com/api/v1` and `VITE_ASSET_URL=https://apierp.holydeen.com`.
+   The built site is static — there is no proxy, so a relative `/api/v1` would call the web app's own domain.
+2. `npm run build`, then upload the **contents** of `dist/` (including the hidden `.htaccess` files) to the
+   site's `public_html`. `public/.htaccess` sends deep links such as `/sales/invoices` to `index.html` (no 404
+   on refresh) and keeps `index.html` uncached; `public/assets/.htaccess` caches the hashed bundles for a year.
+3. On the API, add the web app's exact origin (e.g. `https://erp.holydeen.com`, with and without `www` if both
+   are used) to `CORS_ORIGINS`. While both are subdomains of `holydeen.com` the refresh cookie works with
+   `COOKIE_SAMESITE=lax`; on a different domain use `COOKIE_SAMESITE=none`.
+
 ## Scripts
 
 | Command                                              | Description                                |
